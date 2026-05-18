@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { store } from "@/store";
+import "@/i18n"; // Initialize i18n
 
 export const unstable_settings = {
   anchor: "(tabs)",

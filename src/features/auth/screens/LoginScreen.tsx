@@ -15,7 +15,7 @@ export const LoginScreen = () => {
   return (
     <ScreenContainer style={styles.container}>
       <View style={styles.content}>
-        <Text style={presets.h1}>Welcome to RentalTrakr</Text>
+        <Text style={[presets.h1, { textAlign: 'center' }]}>Welcome to RentalTrakr</Text>
         <Text style={[presets.body, styles.subtitle]}>
           Enter your email to receive a secure login code.
         </Text>
@@ -40,6 +40,7 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
+    alignItems: 'center',
     padding: layout.gutter,
   },
   content: {
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     marginBottom: spacing.xl,
     color: colors.textLight,
+    textAlign: 'center',
   },
   input: {
     backgroundColor: colors.surface,

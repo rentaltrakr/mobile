@@ -1,16 +1,21 @@
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Stack } from "expo-router";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Index() {
   const router = useRouter();
+  const { t } = useTranslation('common');
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello World, Rental Trakr</Text>
+      <Stack.Screen options={{ headerRight: () => <LanguageSwitcher /> }} />
+      <Text style={styles.text}>{t('hello_world')}</Text>
       <TouchableOpacity
         onPress={() => router.push("/onboarding/OnboardingOne" as any)}
       >
-        <Text style={styles.button}>Go to Onboarding One</Text>
+        <Text style={styles.button}>{t('go_onboarding')}</Text>
       </TouchableOpacity>
     </View>
   );

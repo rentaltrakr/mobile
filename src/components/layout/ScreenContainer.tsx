@@ -28,15 +28,15 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
   const Wrapper = scrollable ? ScrollView : View;
 
   return (
-    <Container style={[styles.container, style]}>
+    <Container style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
       >
         <Wrapper
-          style={styles.wrapper}
-          contentContainerStyle={scrollable ? styles.scrollContent : undefined}
+          style={[styles.wrapper, style]}
+          contentContainerStyle={scrollable ? [styles.scrollContent, style] : undefined}
           showsVerticalScrollIndicator={false}
         >
           {children}

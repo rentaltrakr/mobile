@@ -1,9 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
+  const { t } = useTranslation('common');
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello World (from Tabs)</Text>
+      <Text style={styles.text}>{t('hello_tabs')}</Text>
     </View>
   );
 }

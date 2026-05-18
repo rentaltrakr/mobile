@@ -17,7 +17,7 @@ export const RegisterScreen = () => {
   return (
     <ScreenContainer style={styles.container}>
       <View style={styles.content}>
-        <Text style={presets.h1}>Create Account</Text>
+        <Text style={[presets.h1, { textAlign: 'center' }]}>Create Account</Text>
         <Text style={[presets.body, styles.subtitle]}>
           Join RentalTrakr and start exploring.
         </Text>
@@ -56,6 +56,7 @@ export const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
+    alignItems: 'center',
     padding: layout.gutter,
   },
   content: {
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     marginBottom: spacing.xl,
     color: colors.textLight,
+    textAlign: 'center',
   },
   input: {
     backgroundColor: colors.surface,

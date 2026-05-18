@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { ScreenContainer } from "../../../components/layout/ScreenContainer";
 import { colors } from "../../../theme/colors";
 import { layout, spacing } from "../../../theme/spacing";
@@ -8,18 +9,20 @@ import { presets } from "../../../theme/typography";
 
 export const OnboardingThree = () => {
   const router = useRouter();
+  const { t } = useTranslation('common');
+
   return (
     <ScreenContainer style={styles.container}>
       <View style={styles.content}>
-        <Text style={presets.h1}>Step 3: Pay with NJC</Text>
+        <Text style={presets.h1}>{t('step3_title')}</Text>
         <Text style={[presets.body, styles.subtitle]}>
-          Secure, instant transactions with our internal currency.
+          {t('step3_subtitle')}
         </Text>
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push("/onboarding/OnboardingFour" as any)}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={styles.buttonText}>{t('next')}</Text>
         </TouchableOpacity>
       </View>
     </ScreenContainer>

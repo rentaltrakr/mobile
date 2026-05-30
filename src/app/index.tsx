@@ -1,24 +1,26 @@
-import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useAppInitialization } from "@/hooks/useAppInitialization";
 import { Stack } from "expo-router";
-import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { Image, StyleSheet, View } from "react-native";
 
-export default function Index() {
-  const router = useRouter();
-  const { t } = useTranslation('common');
+export default function SplashScreen() {
+  const { isLoading } = useAppInitialization();
 
-  return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ headerRight: () => <LanguageSwitcher /> }} />
-      <Text style={styles.text}>{t('hello_world')}</Text>
-      <TouchableOpacity
-        onPress={() => router.push("/onboarding/OnboardingOne" as any)}
-      >
-        <Text style={styles.button}>{t('go_onboarding')}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  // Show splash screen while initializing
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <Image
+          source={require("../../public/assets/images/icon.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+    );
+  }
+
+  // Return null after initialization - navigation is handled by useAppInitialization
+  return null;
 }
 
 const styles = StyleSheet.create({
@@ -28,18 +30,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  button: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#007AFF",
-    borderRadius: 5,
-    color: "#fff",
-    fontSize: 16,
+  logo: {
+    width: 150,
+    height: 150,
   },
 });

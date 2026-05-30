@@ -3,30 +3,19 @@ import { layout, spacing } from "@/theme/spacing";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from "react-native";
 
-export default function HomeScreen() {
+export default function ProfileScreen() {
   const { t } = useTranslation("home");
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>{t("greeting")}</Text>
-          <Text style={styles.headerTitle}>{t("overview")}</Text>
-          <Text style={styles.headerSubtitle}>{t("performance_text")}</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color={colors.text} />
-        </TouchableOpacity>
-      </View>
+    
 
       {/* Revenue Card */}
       <View style={styles.revenueCard}>
@@ -36,109 +25,12 @@ export default function HomeScreen() {
             <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
           </TouchableOpacity>
         </View>
-        <Text style={styles.revenueAmount}>$12,450.00</Text>
+        <Text style={styles.revenueAmount}>activities main screen</Text>
         <TouchableOpacity style={styles.withdrawButton}>
           <Text style={styles.withdrawButtonText}>{t("withdraw_funds")}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Trade Assets Card */}
-      <View style={styles.tradeCard}>
-        <View style={styles.tradeHeader}>
-          <View style={styles.tradeIconContainer}>
-            <Ionicons name="trending-up" size={24} color={colors.surface} />
-          </View>
-          <TouchableOpacity>
-            <Ionicons name="copy-outline" size={20} color={colors.surface} />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.tradeButton}>
-          <Text style={styles.tradeButtonText}>{t("trade_assets")}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Next Rent Due Card */}
-      <View style={styles.rentCard}>
-        <View style={styles.rentHeader}>
-          <Text style={styles.rentLabel}>{t("next_rent_due")}</Text>
-          <TouchableOpacity>
-            <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.rentAmount}>$2,100.00</Text>
-        <Text style={styles.rentDate}>{t("due_date")}</Text>
-        <TouchableOpacity style={styles.autoPayButton}>
-          <Text style={styles.autoPayButtonText}>{t("setup_auto_pay")}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Upgrade Section */}
-      <View style={styles.upgradeCard}>
-        <Text style={styles.upgradeLabel}>{t("unlock_potential")}</Text>
-        <Text style={styles.upgradeTitle}>{t("upgrade_title")}</Text>
-        <Text style={styles.upgradeDescription}>{t("upgrade_description")}</Text>
-        <View style={styles.upgradeButtons}>
-          <TouchableOpacity style={styles.upgradeNowButton}>
-            <Text style={styles.upgradeNowText}>{t("upgrade_now")}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.learnMoreButton}>
-            <Text style={styles.learnMoreText}>{t("learn_more")}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Property Image */}
-      <View style={styles.propertyImageContainer}>
-        <Image
-          source={require("../../../public/assets/images/react-logo.png")}
-          style={styles.propertyImage}
-          resizeMode="cover"
-        />
-      </View>
-
-      {/* Recent Activity */}
-      <View style={styles.activitySection}>
-        <View style={styles.activityHeader}>
-          <Text style={styles.activityTitle}>{t("recent_activity")}</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAllText}>{t("view_all")}</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Activity Items */}
-        <View style={styles.activityItem}>
-          <View style={[styles.activityIcon, styles.activityIconGreen]}>
-            <Ionicons name="arrow-down" size={20} color="#10b981" />
-          </View>
-          <View style={styles.activityInfo}>
-            <Text style={styles.activityName}>{t("activity_rent_payment")}</Text>
-            <Text style={styles.activityDate}>Dec 15, 2024 • 2:30 PM</Text>
-          </View>
-          <Text style={styles.activityAmount}>+$2,100.00</Text>
-        </View>
-
-        <View style={styles.activityItem}>
-          <View style={[styles.activityIcon, styles.activityIconDark]}>
-            <Ionicons name="arrow-up" size={20} color={colors.surface} />
-          </View>
-          <View style={styles.activityInfo}>
-            <Text style={styles.activityName}>{t("activity_expense")}</Text>
-            <Text style={styles.activityDate}>Dec 14, 2024 • 10:15 AM</Text>
-          </View>
-          <Text style={[styles.activityAmount, styles.activityAmountNegative]}>-$450.00</Text>
-        </View>
-
-        <View style={styles.activityItem}>
-          <View style={[styles.activityIcon, styles.activityIconGray]}>
-            <Ionicons name="document-text" size={20} color={colors.textLight} />
-          </View>
-          <View style={styles.activityInfo}>
-            <Text style={styles.activityName}>{t("activity_transfer")}</Text>
-            <Text style={styles.activityDate}>Dec 13, 2024 • 4:45 PM</Text>
-          </View>
-          <Text style={styles.activityAmount}>+$3,200.00</Text>
-        </View>
-      </View>
 
       {/* Bottom Spacing for Tab Bar */}
       <View style={styles.bottomSpacing} />

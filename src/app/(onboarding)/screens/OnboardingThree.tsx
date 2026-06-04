@@ -12,7 +12,10 @@ interface OnboardingThreeProps {
   onDotPress: (step: number) => void;
 }
 
-export const OnboardingThree = ({ onNext, onDotPress }: OnboardingThreeProps) => {
+export const OnboardingThree = ({
+  onNext,
+  onDotPress,
+}: OnboardingThreeProps) => {
   const { t } = useTranslation("common");
   const { skipToLogin } = useOnboardingNavigation();
 
@@ -20,7 +23,7 @@ export const OnboardingThree = ({ onNext, onDotPress }: OnboardingThreeProps) =>
     <ScreenContainer style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require("../../../../public/assets/icons/E-Wallet-pana.svg")}
+          source={require("../../../assets/images/E-Wallet-pana.png")}
           style={styles.hero}
           resizeMode="contain"
         />

@@ -20,7 +20,7 @@ interface Country {
 }
 
 const COUNTRIES: Country[] = [
-  { name: "Cameroon", code: "CAM", dialCode: "+234", flag: "CAM" },
+  { name: "Cameroon", code: "CM", dialCode: "+237", flag: "🇨🇲" },
   { name: "United States", code: "US", dialCode: "+1", flag: "🇺🇸" },
   { name: "Canada", code: "CA", dialCode: "+1", flag: "🇨🇦" },
   { name: "United Kingdom", code: "GB", dialCode: "+44", flag: "🇬🇧" },

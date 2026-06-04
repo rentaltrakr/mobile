@@ -11,7 +11,7 @@ export default function SplashScreen() {
       <View style={styles.container}>
         <Stack.Screen options={{ headerShown: false }} />
         <Image
-          source={require("../../public/assets/images/icon.png")}
+          source={require("../assets/images/icon.png")}
           style={styles.logo}
           resizeMode="contain"
         />

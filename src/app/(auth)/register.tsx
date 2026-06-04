@@ -173,13 +173,13 @@ const styles = StyleSheet.create({
   },
   switcherContainer: {
     position: "absolute",
-    top: 50,
+    top: 30,
     right: 15,
     zIndex: 10,
   },
   content: {
     width: "100%",
-    marginTop: 80,
+    marginTop: 20,
   },
   progressContainer: {
     marginBottom: spacing.xl,

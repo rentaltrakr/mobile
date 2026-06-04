@@ -1,10 +1,5 @@
 import { useTranslation } from "react-i18next";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { ScreenContainer } from "../../../components/layout/ScreenContainer";
 import { colors } from "../../../theme/colors";
 import { layout, spacing } from "../../../theme/spacing";
@@ -17,18 +12,21 @@ interface OnboardingFourProps {
   onDotPress: (step: number) => void;
 }
 
-export const OnboardingFour = ({ onFinish, onDotPress }: OnboardingFourProps) => {
+export const OnboardingFour = ({
+  onFinish,
+  onDotPress,
+}: OnboardingFourProps) => {
   const { t } = useTranslation("common");
   const { skipToLogin } = useOnboardingNavigation();
 
   return (
     <ScreenContainer style={styles.container}>
       <View style={styles.content}>
-          <Image
-            source={require("../../../../public/assets/icons/Smart-home-cuate.svg")}
-            style={styles.hero}
-            resizeMode="contain"
-          />
+        <Image
+          source={require("../../../assets/images/Smart-home-cuate.png")}
+          style={styles.hero}
+          resizeMode="contain"
+        />
         <Text style={presets.h1}>{t("step4_title")}</Text>
         <Text style={[presets.body, styles.subtitle]}>
           {t("step4_subtitle")}

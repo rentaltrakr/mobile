@@ -20,7 +20,7 @@ export const OnboardingTwo = ({ onNext, onDotPress }: OnboardingTwoProps) => {
     <ScreenContainer style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require("../../../../public/assets/icons/Browse-smarter-pana.svg")}
+          source={require("../../../assets/images/Browse-smarter-pana.png")}
           style={styles.hero}
           resizeMode="contain"
         />

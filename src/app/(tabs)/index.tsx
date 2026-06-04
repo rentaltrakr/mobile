@@ -24,7 +24,11 @@ export default function HomeScreen() {
           <Text style={styles.headerSubtitle}>{t("performance_text")}</Text>
         </View>
         <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color={colors.text} />
+          <Ionicons
+            name="notifications-outline"
+            size={24}
+            color={colors.text}
+          />
         </TouchableOpacity>
       </View>
 
@@ -33,7 +37,11 @@ export default function HomeScreen() {
         <View style={styles.revenueHeader}>
           <Text style={styles.revenueLabel}>{t("revenue")}</Text>
           <TouchableOpacity>
-            <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
+            <Ionicons
+              name="information-circle-outline"
+              size={20}
+              color={colors.primary}
+            />
           </TouchableOpacity>
         </View>
         <Text style={styles.revenueAmount}>$12,450.00</Text>
@@ -62,7 +70,11 @@ export default function HomeScreen() {
         <View style={styles.rentHeader}>
           <Text style={styles.rentLabel}>{t("next_rent_due")}</Text>
           <TouchableOpacity>
-            <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
+            <Ionicons
+              name="information-circle-outline"
+              size={20}
+              color={colors.primary}
+            />
           </TouchableOpacity>
         </View>
         <Text style={styles.rentAmount}>$2,100.00</Text>
@@ -76,7 +88,9 @@ export default function HomeScreen() {
       <View style={styles.upgradeCard}>
         <Text style={styles.upgradeLabel}>{t("unlock_potential")}</Text>
         <Text style={styles.upgradeTitle}>{t("upgrade_title")}</Text>
-        <Text style={styles.upgradeDescription}>{t("upgrade_description")}</Text>
+        <Text style={styles.upgradeDescription}>
+          {t("upgrade_description")}
+        </Text>
         <View style={styles.upgradeButtons}>
           <TouchableOpacity style={styles.upgradeNowButton}>
             <Text style={styles.upgradeNowText}>{t("upgrade_now")}</Text>
@@ -90,7 +104,7 @@ export default function HomeScreen() {
       {/* Property Image */}
       <View style={styles.propertyImageContainer}>
         <Image
-          source={require("../../../public/assets/images/react-logo.png")}
+          source={require("../../assets/images/react-logo.png")}
           style={styles.propertyImage}
           resizeMode="cover"
         />
@@ -111,7 +125,9 @@ export default function HomeScreen() {
             <Ionicons name="arrow-down" size={20} color="#10b981" />
           </View>
           <View style={styles.activityInfo}>
-            <Text style={styles.activityName}>{t("activity_rent_payment")}</Text>
+            <Text style={styles.activityName}>
+              {t("activity_rent_payment")}
+            </Text>
             <Text style={styles.activityDate}>Dec 15, 2024 • 2:30 PM</Text>
           </View>
           <Text style={styles.activityAmount}>+$2,100.00</Text>
@@ -125,7 +141,9 @@ export default function HomeScreen() {
             <Text style={styles.activityName}>{t("activity_expense")}</Text>
             <Text style={styles.activityDate}>Dec 14, 2024 • 10:15 AM</Text>
           </View>
-          <Text style={[styles.activityAmount, styles.activityAmountNegative]}>-$450.00</Text>
+          <Text style={[styles.activityAmount, styles.activityAmountNegative]}>
+            -$450.00
+          </Text>
         </View>
 
         <View style={styles.activityItem}>

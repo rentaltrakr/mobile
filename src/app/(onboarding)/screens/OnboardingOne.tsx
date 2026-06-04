@@ -25,11 +25,11 @@ export const OnboardingOne = ({ onNext, onDotPress }: OnboardingOneProps) => {
 
       <View style={styles.content}>
         <Image
-          source={require("../../../../public/assets/icons/Houses-pana.svg")}
+          source={require("../../../assets/images/Houses-pana.png")}
           style={styles.hero}
           resizeMode="contain"
         />
-        <Text style={presets.h1}>{t("step1_title")}</Text>
+        <Text style={[presets.h1, styles.h1]}>{t("step1_title")}</Text>
 
         <Text style={[presets.body, styles.subtitle]}>
           {t("step1_subtitle")}
@@ -60,6 +60,10 @@ const styles = StyleSheet.create({
     width: 320,
     height: 240,
     marginBottom: spacing.lg,
+  },
+  h1: {
+    textAlign: "center",
+    width: 320,
   },
   subtitle: {
     marginTop: spacing.lg,

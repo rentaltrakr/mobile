@@ -42,8 +42,8 @@ export const useAppInitialization = () => {
       // First time user - show onboarding
       router.replace("/onboarding");
     } else if (hasSeenOnboarding && !isAuthenticated && !inAuthGroup) {
-      // Seen onboarding but not authenticated - show login
-      router.replace("/(auth)/login");
+      // Seen onboarding but not authenticated - show welcome page by default
+      router.replace("/(auth)/welcome-page");
     } else if (hasSeenOnboarding && isAuthenticated && !inTabsGroup) {
       // Authenticated user - show main app
       router.replace("/(tabs)");

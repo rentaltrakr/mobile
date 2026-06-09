@@ -17,12 +17,12 @@ export default function OnboardingScreen() {
     try {
       // Mark onboarding as completed
       await storage.setHasSeenOnboarding(true);
-      // Navigate to login
-      router.replace("/(auth)/login");
+      // Navigate to welcome page
+      router.replace("/(auth)/welcome-page");
     } catch (error) {
       console.error("Error completing onboarding:", error);
       // Navigate anyway
-      router.replace("/(auth)/login");
+      router.replace("/(auth)/welcome-page");
     }
   };
 

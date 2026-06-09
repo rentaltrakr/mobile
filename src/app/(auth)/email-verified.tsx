@@ -1,13 +1,12 @@
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { colors } from "@/theme/colors";
 import { layout, spacing } from "@/theme/spacing";
-import { presets } from "@/theme/typography";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,124 +16,105 @@ import {
 
 export default function EmailVerifiedScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const { t } = useTranslation("auth");
-  const [countdown, setCountdown] = useState(5);
-  const [autoRedirect, setAutoRedirect] = useState(true);
+  const [resending, setResending] = useState(false);
 
-  // Mock user data - replace with actual user data from your auth system
-  const userEmail = "alex.innovator@example.com";
-  const userName = "Alex Innovator";
+  // Read passed email or use a premium placeholder fallback
+  const email = (params.email as string) || "stephen@example.com";
 
-  useEffect(() => {
-    if (!autoRedirect) return;
+  const handleResend = () => {
+    setResending(true);
+    console.log("Resending verification email to:", email);
+    // Simulate API call
+    setTimeout(() => {
+      setResending(false);
+    }, 1500);
+  };
 
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          router.replace("/(tabs)");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [autoRedirect, router]);
-
-  const handleContinue = () => {
-    setAutoRedirect(false);
-    router.replace("/(tabs)");
+  const handleBackToLogin = () => {
+    router.replace("/(auth)/login");
   };
 
   return (
     <ScreenContainer style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Success Icon */}
-        <View style={styles.iconContainer}>
-          <View style={styles.successCircle}>
-            <Ionicons name="checkmark" size={48} color={colors.primary} />
+      {/* Language Switcher */}
+      <View style={styles.switcherContainer}>
+        <LanguageSwitcher />
+      </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Verification Icon Box */}
+        <View style={styles.illustrationContainer}>
+          <View style={styles.outerBox}>
+            <View style={styles.innerBox}>
+              <View style={styles.firstBox}>
+                <View style={styles.iconWrapper}>
+                  <Ionicons name="mail" size={54} color={colors.primary} />
+                  <View style={styles.badgeContainer}>
+                    <View style={styles.badge}>
+                      <Ionicons
+                        name="checkmark"
+                        size={14}
+                        color={colors.primary}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
           </View>
         </View>
 
         {/* Title */}
-        <Text style={[presets.h1, styles.title]}>
-          {t("email_verified_title")}
+        <Text style={styles.title}>{t("check_email_title")}</Text>
+
+        {/* Subtitle with email bolded */}
+        <Text style={styles.subtitle}>
+          {t("check_email_subtitle_prefix")}{" "}
+          <Text style={styles.boldText}>{email}</Text>.{" "}
+          {t("check_email_subtitle_suffix")}
         </Text>
 
-        {/* Subtitle */}
-        <Text style={[presets.body, styles.subtitle]}>
-          {t("email_verified_subtitle")}
-        </Text>
-
-        {/* User Info Card */}
-        <View style={styles.userCard}>
-          <View style={styles.userIconContainer}>
-            <Ionicons name="person" size={20} color={colors.primary} />
-          </View>
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>{userName}</Text>
-            <Text style={styles.userEmail}>{userEmail}</Text>
-          </View>
-          <View style={styles.verifiedBadge}>
-            <Text style={styles.verifiedText}>{t("verified")}</Text>
-          </View>
-        </View>
-
-        {/* Continue Button */}
-        <TouchableOpacity style={styles.button} onPress={handleContinue}>
-          <Text style={styles.buttonText}>{t("btn_continue_dashboard")}</Text>
+        {/* Resend Email Button */}
+        <TouchableOpacity
+          style={[styles.button, resending && styles.buttonDisabled]}
+          onPress={handleResend}
+          disabled={resending}
+        >
+          <Ionicons
+            name="mail-outline"
+            size={20}
+            color={colors.surface}
+            style={styles.buttonIcon}
+          />
+          <Text style={styles.buttonText}>
+            {resending ? "..." : t("btn_resend_email")}
+          </Text>
         </TouchableOpacity>
 
-        {/* Countdown */}
-        {autoRedirect && (
-          <View style={styles.countdownContainer}>
-            <ActivityIndicator size="small" color={colors.textLight} />
-            <Text style={styles.countdownText}>
-              {t("redirecting_in", { seconds: countdown })}
-            </Text>
-          </View>
-        )}
+        {/* Back to Login Link */}
+        <TouchableOpacity style={styles.linkButton} onPress={handleBackToLogin}>
+          <Text style={styles.linkText}>{t("btn_back_to_login")}</Text>
+        </TouchableOpacity>
 
-        {/* Feature Cards */}
-        <View style={styles.featuresContainer}>
-          {/* Security First */}
-          <View style={styles.featureCard}>
-            <View style={[styles.featureIcon, styles.securityIcon]}>
-              <Ionicons name="shield-checkmark" size={24} color="#1e3a8a" />
-            </View>
-            <Text style={styles.featureTitle}>
-              {t("feature_security_title")}
-            </Text>
-            <Text style={styles.featureDescription}>
-              {t("feature_security_desc")}
-            </Text>
-          </View>
-
-          {/* Wallet Ready */}
-          <View style={styles.featureCard}>
-            <View style={[styles.featureIcon, styles.walletIcon]}>
-              <Ionicons name="wallet" size={24} color={colors.primary} />
-            </View>
-            <Text style={styles.featureTitle}>{t("feature_wallet_title")}</Text>
-            <Text style={styles.featureDescription}>
-              {t("feature_wallet_desc")}
-            </Text>
-          </View>
-
-          {/* Priority Support */}
-          <View style={styles.featureCard}>
-            <View style={[styles.featureIcon, styles.supportIcon]}>
-              <Ionicons name="headset" size={24} color="#8b5cf6" />
-            </View>
-            <Text style={styles.featureTitle}>
-              {t("feature_support_title")}
-            </Text>
-            <Text style={styles.featureDescription}>
-              {t("feature_support_desc")}
-            </Text>
-          </View>
+        {/* Info/Spam notice card */}
+        <View style={styles.noticeCard}>
+          <Ionicons
+            name="information-circle-outline"
+            size={20}
+            color={colors.textLight}
+            style={styles.noticeIcon}
+          />
+          <Text style={styles.noticeText}>{t("check_email_notice")}</Text>
         </View>
+
+        {/* Footer */}
+        <Text style={styles.footerText}>{t("copyright_text")}</Text>
       </ScrollView>
     </ScreenContainer>
   );
@@ -142,143 +122,155 @@ export default function EmailVerifiedScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "flex-start",
-    padding: layout.gutter,
-    paddingTop: spacing.xl * 2,
+    flex: 1,
+    backgroundColor: "#F5F7FA",
   },
-  content: {
-    width: "100%",
+  switcherContainer: {
+    position: "absolute",
+    top: 50,
+    right: 15,
+    zIndex: 10,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: spacing.lg,
+    paddingBottom: spacing.xl * 2,
     alignItems: "center",
   },
-  iconContainer: {
-    marginBottom: spacing.xl,
+  illustrationContainer: {
+    marginTop: spacing.xl + 40,
+    marginBottom: spacing.xl * 1.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  successCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#d1fae5",
+  outerBox: {
+    width: 170,
+    height: 170,
+    borderRadius: 24,
+    backgroundColor: "#d7e2f8",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  innerBox: {
+    width: 124,
+    height: 124,
+    borderRadius: 16,
+    backgroundColor: "#f8ebd8",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  firstBox: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconWrapper: {
+    position: "relative",
+    width: 60,
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeContainer: {
+    position: "absolute",
+    bottom: -4,
+    right: -4,
+  },
+  badge: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "#F6EFE5",
+    borderWidth: 2,
+    borderColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: spacing.sm,
+    color: colors.text,
     textAlign: "center",
+    marginBottom: spacing.md,
   },
   subtitle: {
-    marginBottom: spacing.xl,
-    color: colors.textLight,
-    textAlign: "center",
-    lineHeight: 22,
-    paddingHorizontal: spacing.md,
-  },
-  userCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    backgroundColor: "#f9fafb",
-    padding: spacing.lg,
-    borderRadius: layout.borderRadius.md,
-    marginBottom: spacing.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  userIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#e0f2fe",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: spacing.md,
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.text,
-    marginBottom: 2,
-  },
-  userEmail: {
     fontSize: 14,
     color: colors.textLight,
+    textAlign: "center",
+    lineHeight: 20,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.xl * 1.5,
   },
-  verifiedBadge: {
-    backgroundColor: "#d1fae5",
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: layout.borderRadius.sm,
-  },
-  verifiedText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#059669",
+  boldText: {
+    fontWeight: "bold",
+    color: colors.text,
   },
   button: {
     backgroundColor: colors.primary,
-    padding: spacing.lg,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xl,
     borderRadius: layout.borderRadius.md,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    marginBottom: spacing.md,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: spacing.lg,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonIcon: {
+    marginRight: spacing.sm,
   },
   buttonText: {
     color: colors.surface,
     fontSize: 16,
     fontWeight: "bold",
   },
-  countdownContainer: {
+  linkButton: {
+    paddingVertical: spacing.sm,
+    marginBottom: spacing.xl * 1.5,
+  },
+  linkText: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  noticeCard: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    marginBottom: spacing.xl,
-  },
-  countdownText: {
-    fontSize: 14,
-    color: colors.textLight,
-  },
-  featuresContainer: {
-    width: "100%",
-    gap: spacing.md,
-  },
-  featureCard: {
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
+    backgroundColor: "#F0F2F5",
     borderRadius: layout.borderRadius.md,
     borderWidth: 1,
     borderColor: colors.border,
+    padding: spacing.lg,
+    alignItems: "flex-start",
+    width: "100%",
+    marginBottom: spacing.xl * 2,
   },
-  featureIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: spacing.md,
+  noticeIcon: {
+    marginRight: spacing.md,
+    marginTop: 2,
   },
-  securityIcon: {
-    backgroundColor: "#dbeafe",
-  },
-  walletIcon: {
-    backgroundColor: "#d1fae5",
-  },
-  supportIcon: {
-    backgroundColor: "#e9d5ff",
-  },
-  featureTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: colors.text,
-    marginBottom: spacing.sm,
-  },
-  featureDescription: {
-    fontSize: 14,
+  noticeText: {
+    flex: 1,
+    fontSize: 13,
     color: colors.textLight,
-    lineHeight: 20,
+    lineHeight: 18,
+  },
+  footerText: {
+    fontSize: 11,
+    color: colors.textLight,
+    textAlign: "center",
+    marginTop: spacing.sm,
   },
 });

@@ -3,11 +3,12 @@ import { useRouter } from "expo-router";
 export const useOnboardingNavigation = () => {
   const router = useRouter();
 
-  const skipToLogin = () => {
-    router.replace("/(auth)/login");
+  const skipToWelcome = () => {
+    router.replace("/(auth)/welcome-page");
   };
 
   return {
-    skipToLogin,
+    skipToWelcome,
+    skipToLogin: skipToWelcome,
   };
 };

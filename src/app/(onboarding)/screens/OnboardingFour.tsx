@@ -17,7 +17,7 @@ export const OnboardingFour = ({
   onDotPress,
 }: OnboardingFourProps) => {
   const { t } = useTranslation("common");
-  const { skipToLogin } = useOnboardingNavigation();
+  const { skipToWelcome } = useOnboardingNavigation();
 
   return (
     <ScreenContainer style={styles.container}>
@@ -36,7 +36,7 @@ export const OnboardingFour = ({
       <OnboardingFooter
         currentStep={4}
         totalSteps={4}
-        onSkip={skipToLogin}
+        onSkip={skipToWelcome}
         onNext={onFinish}
         onDotPress={onDotPress}
       />

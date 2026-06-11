@@ -1,70 +1,22 @@
 // app/(tabs)/upgrade.tsx  (ou screens/UpgradeScreen.tsx selon ta structure)
+import { PRO_ROLES } from "@/constants/dummyData";
 import { colors } from "@/theme/colors";
 import { layout, spacing } from "@/theme/spacing";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
-const PRO_ROLES = [
-  {
-    id: "landlord",
-    icon: "business-outline",
-    title: "Landlord",
-    description: "Manage multiple properties, track payments, and verify tenant history.",
-  },
-  {
-    id: "lawyer",
-    icon: "briefcase-outline",
-    title: "Lawyer",
-    description: "Access legal document templates and provide consultation for rental disputes.",
-  },
-  {
-    id: "tax_consultant",
-    icon: "calculator-outline",
-    title: "Tax Consultant",
-    description: "Assist landlords with asset depreciation and rental income tax filing.",
-  },
-  {
-    id: "partner",
-    icon: "people-outline",
-    title: "Partner",
-    description: "Official service providers for cleaning, maintenance, and staging.",
-  },
-  {
-    id: "merchant",
-    icon: "storefront-outline",
-    title: "Merchant",
-    description: "List supplies and equipment for commercial or residential property upgrades.",
-  },
-  {
-    id: "hotel",
-    icon: "bed-outline",
-    title: "Hotel",
-    description: "Sync booking calendars and manage short-term corporate housing.",
-  },
-  {
-    id: "real_estate_agent",
-    icon: "home-outline",
-    title: "Real Estate Agent",
-    description: "Broker deals, list high-end units, and earn verified referral commissions.",
-  },
-  {
-    id: "corporation",
-    icon: "stats-chart-outline",
-    title: "Corporation",
-    description: "Scale operations with multi-user access and integrated portfolio analytics.",
-  },
-] as const;
-
-export default function UpgradeScreen() {
+export default function AccountUpgradeScreen() {
+  const { t } = useTranslation("home");
   const router = useRouter();
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -72,30 +24,51 @@ export default function UpgradeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
           <Ionicons name="arrow-back" size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>RentalTrakr</Text>
         <View style={styles.headerRight}>
-          <Ionicons name="notifications-outline" size={22} color={colors.text} />
+          <Ionicons
+            name="notifications-outline"
+            size={22}
+            color={colors.text}
+          />
           <View style={styles.avatarChip}>
             <Text style={styles.avatarChipText}>JD</Text>
           </View>
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+      >
         {/* Hero Banner */}
         <View style={styles.heroBanner}>
           {/* Background image via tint overlay */}
-          <View style={styles.heroOverlay} />
-          <Text style={styles.heroTitle}>Become a Professional</Text>
+          {/* <View style={styles.heroOverlay} /> */}
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("@/assets/images/glass-building.png")}
+              style={styles.buildingImage}
+              resizeMode="cover"
+            />
+            <Text style={styles.heroTitle}>
+              {t("upgrade_hero_title", "Become a Professional")}
+            </Text>
+          </View>
         </View>
 
         {/* Subtitle */}
         <Text style={styles.subtitle}>
-          Select your professional role to unlock advanced tools, verified networking, and exclusive
-          rental management features tailored to your industry.
+          {t(
+            "upgrade_subtitle_text",
+            "Select your professional role to unlock advanced tools, verified networking, and exclusive rental management features tailored to your industry.",
+          )}
         </Text>
 
         {/* Role List */}
@@ -112,11 +85,19 @@ export default function UpgradeScreen() {
               activeOpacity={0.7}
             >
               <View style={styles.roleIconBox}>
-                <Ionicons name={role.icon as any} size={22} color={colors.primary} />
+                <Ionicons
+                  name={role.icon as any}
+                  size={22}
+                  color={colors.primary}
+                />
               </View>
               <View style={styles.roleTextBox}>
-                <Text style={styles.roleTitle}>{role.title}</Text>
-                <Text style={styles.roleDesc}>{role.description}</Text>
+                <Text style={styles.roleTitle}>
+                  {t(`role_${role.id}_title`, role.title)}
+                </Text>
+                <Text style={styles.roleDesc}>
+                  {t(`role_${role.id}_desc`, role.description)}
+                </Text>
               </View>
               <View
                 style={[
@@ -136,8 +117,10 @@ export default function UpgradeScreen() {
       {/* Sticky Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerDisclaimer}>
-          By continuing, you agree to provide industry-specific documentation for our verification
-          process.
+          {t(
+            "upgrade_disclaimer",
+            "By continuing, you agree to provide industry-specific documentation for our verification process.",
+          )}
         </Text>
         <TouchableOpacity
           style={[styles.ctaButton, !selected && styles.ctaButtonDisabled]}
@@ -147,7 +130,9 @@ export default function UpgradeScreen() {
           }}
           activeOpacity={selected ? 0.85 : 1}
         >
-          <Text style={styles.ctaText}>Continue to Verification →</Text>
+          <Text style={styles.ctaText}>
+            {t("upgrade_cta", "Continue to Verification →")}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -186,8 +171,8 @@ const styles = StyleSheet.create({
 
   // Hero
   heroBanner: {
-    height: 160,
-    backgroundColor: "#0A2540",
+    height: 190,
+    //backgroundColor: "#0A2540",
     justifyContent: "flex-end",
     padding: spacing.lg,
     marginBottom: spacing.lg,
@@ -196,7 +181,25 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(10,37,64,0.55)",
   },
+
+  imageContainer: {
+    marginTop: -80,
+    width: "100%",
+    height: 160,
+    borderRadius: layout.borderRadius.lg,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: colors.border,
+    //marginBottom: spacing.lg,
+  },
+  buildingImage: {
+    width: "100%",
+    height: "100%",
+  },
   heroTitle: {
+    position: "absolute",
+    bottom: 16,
+    left: 12,
     fontSize: 24,
     fontWeight: "800",
     color: "#fff",

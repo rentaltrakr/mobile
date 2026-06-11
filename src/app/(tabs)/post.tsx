@@ -1,143 +1,125 @@
-import React, { useState } from "react";
+import { options, userProfile } from "@/constants/dummyData";
+import { spacing } from "@/theme/spacing";
+import { PostOption } from "@/types/types";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import {
+  Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
-import { useTranslation } from "react-i18next";
-import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/theme/colors";
-import { layout, spacing } from "@/theme/spacing";
-import { useRouter } from "expo-router";
 
-export default function PostScreen() {
+export default function PostTabScreen() {
   const { t } = useTranslation("home");
   const router = useRouter();
-  
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState<"listing" | "service" | "alert">("listing");
-  const [title, setTitle] = useState("");
 
-  const handlePublish = () => {
-    if (!content.trim()) {
-      Alert.alert(t("post_error_title", "Error"), t("post_error_desc", "Please write some content before publishing."));
-      return;
+  const avatarSource =
+    typeof userProfile.avatar === "number"
+      ? userProfile.avatar
+      : { uri: userProfile.avatar };
+
+  const handleOptionPress = (option: PostOption) => {
+    if (option.route) {
+      router.push(option.route as any);
+    } else {
+      alert(`${option.title} feature coming soon!`);
     }
+  };
 
-    Alert.alert(
-      t("post_success_title", "Success"),
-      t("post_success_desc", "Your post has been shared successfully!"),
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            setContent("");
-            setTitle("");
-            router.push("/(tabs)");
-          },
-        },
-      ]
-    );
+  const handleCancel = () => {
+    router.push("/(tabs)");
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      {/* Header */}
+    <View style={styles.container}>
+      {/* Gray Branding Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t("create_post_title", "Create Post")}</Text>
-        <TouchableOpacity style={styles.publishButton} onPress={handlePublish}>
-          <Text style={styles.publishButtonText}>{t("publish_btn", "Publish")}</Text>
-        </TouchableOpacity>
+        <View style={styles.headerLeft}>
+          <Image source={avatarSource} style={styles.headerAvatar} />
+          <Text style={styles.headerLogo}>RentalTrakr</Text>
+        </View>
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            style={styles.headerIconBtn}
+            onPress={() =>
+              Alert.alert(
+                t("notifications_title", "Notifications"),
+                t("no_new_notifications", "No new notifications."),
+              )
+            }
+          >
+            <Ionicons name="notifications-outline" size={22} color="#0052CC" />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <ScrollView 
-        style={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Category Selector */}
-        <Text style={styles.sectionTitle}>{t("select_category", "Select Category")}</Text>
-        <View style={styles.categoryRow}>
-          <TouchableOpacity 
-            style={[styles.categoryCard, category === "listing" && styles.categoryCardActive]}
-            onPress={() => setCategory("listing")}
-          >
-            <Ionicons name="business" size={24} color={category === "listing" ? colors.surface : colors.primary} />
-            <Text style={[styles.categoryText, category === "listing" && styles.categoryTextActive]}>
-              {t("category_listing", "Listing")}
-            </Text>
-          </TouchableOpacity>
+      {/* Modal-like Sheet Container */}
+      <View style={styles.sheetContainer}>
+        {/* Handle Bar */}
+        <View style={styles.handleBar} />
 
-          <TouchableOpacity 
-            style={[styles.categoryCard, category === "service" && styles.categoryCardActive]}
-            onPress={() => setCategory("service")}
-          >
-            <Ionicons name="construct" size={24} color={category === "service" ? colors.surface : colors.primary} />
-            <Text style={[styles.categoryText, category === "service" && styles.categoryTextActive]}>
-              {t("category_service", "Service Request")}
-            </Text>
-          </TouchableOpacity>
+        {/* Title */}
+        <Text style={styles.titleText}>
+          {t("create_post_title", "Create Post")}
+        </Text>
 
-          <TouchableOpacity 
-            style={[styles.categoryCard, category === "alert" && styles.categoryCardActive]}
-            onPress={() => setCategory("alert")}
+        {/* Options List */}
+        <ScrollView
+          style={styles.optionsList}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        >
+          {options.map((option) => (
+            <TouchableOpacity
+              key={option.id}
+              style={styles.optionCard}
+              onPress={() => handleOptionPress(option)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.optionLeft}>
+                <View
+                  style={[
+                    styles.iconBox,
+                    { backgroundColor: option.iconBgColor },
+                  ]}
+                >
+                  <Ionicons
+                    name={option.iconName as any}
+                    size={22}
+                    color={option.iconColor}
+                  />
+                </View>
+                <View style={styles.optionTextContainer}>
+                  <Text style={styles.optionTitle}>{option.title}</Text>
+                  <Text style={styles.optionDescription}>
+                    {option.description}
+                  </Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#8E8E93" />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Cancel Button */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={handleCancel}
+            activeOpacity={0.85}
           >
-            <Ionicons name="warning" size={24} color={category === "alert" ? colors.surface : colors.primary} />
-            <Text style={[styles.categoryText, category === "alert" && styles.categoryTextActive]}>
-              {t("category_alert", "Compliance Alert")}
+            <Text style={styles.cancelButtonText}>
+              {t("cancel_btn", "Cancel")}
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* Input Fields */}
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>{t("post_title_label", "Post Title (Optional)")}</Text>
-          <TextInput
-            style={styles.titleInput}
-            placeholder={t("post_title_placeholder", "Enter post title...")}
-            placeholderTextColor="#8E8E93"
-            value={title}
-            onChangeText={setTitle}
-          />
-
-          <Text style={styles.label}>{t("post_content_label", "What would you like to share?")}</Text>
-          <TextInput
-            style={styles.contentInput}
-            placeholder={t("post_content_placeholder", "Write details about properties, services, or updates...")}
-            placeholderTextColor="#8E8E93"
-            multiline
-            numberOfLines={6}
-            value={content}
-            onChangeText={setContent}
-            textAlignVertical="top"
-          />
-        </View>
-
-        {/* Upload Media Placeholders */}
-        <View style={styles.mediaContainer}>
-          <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
-            <Ionicons name="image-outline" size={28} color={colors.primary} />
-            <Text style={styles.mediaText}>{t("add_photo", "Add Photo / Video")}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
-            <Ionicons name="document-text-outline" size={28} color={colors.primary} />
-            <Text style={styles.mediaText}>{t("attach_document", "Attach Document")}</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }
 
@@ -146,6 +128,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F5F7",
   },
+
+  /* ── Gray Branding Header ── */
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -153,125 +137,127 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: 54,
     paddingBottom: spacing.md,
-    backgroundColor: colors.surface,
+    backgroundColor: "#F4F5F7",
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: "#EAECF0",
   },
-  headerTitle: {
-    fontSize: 20,
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  headerAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#DFE1E6",
+  },
+  headerLogo: {
+    fontSize: 18,
     fontWeight: "bold",
-    color: colors.text,
+    color: "#0052CC",
   },
-  publishButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: layout.borderRadius.md,
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
   },
-  publishButtonText: {
-    color: colors.surface,
+  headerIconBtn: {
+    padding: 4,
+  },
+
+  /* ── Modal Sheet ── */
+  sheetContainer: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 5,
+    marginTop: 12,
+  },
+  handleBar: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#DFE1E6",
+    alignSelf: "center",
+    marginBottom: 16,
+  },
+  titleText: {
+    fontSize: 18,
     fontWeight: "bold",
-    fontSize: 14,
+    color: "#172B4D",
+    textAlign: "center",
+    marginBottom: 20,
   },
-  scrollContainer: {
+  optionsList: {
+    flex: 1,
+    paddingHorizontal: spacing.lg,
+  },
+  listContent: {
+    gap: 12,
+    paddingBottom: 24,
+  },
+  optionCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#EAECF0",
+  },
+  optionLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
     flex: 1,
   },
-  scrollContent: {
-    padding: spacing.lg,
+  iconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  sectionTitle: {
+  optionTextContainer: {
+    flex: 1,
+  },
+  optionTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#172B4D",
+    marginBottom: 3,
+  },
+  optionDescription: {
+    fontSize: 12,
+    color: "#5E6C84",
+  },
+  buttonContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: 40,
+    paddingTop: 12,
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#F4F5F7",
+  },
+  cancelButton: {
+    backgroundColor: "#172B4D",
+    height: 52,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelButtonText: {
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  categoryRow: {
-    flexDirection: "row",
-    gap: spacing.sm,
-    marginBottom: spacing.xl,
-  },
-  categoryCard: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    borderRadius: layout.borderRadius.md,
-    padding: spacing.md,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.xs,
-  },
-  categoryCardActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  categoryText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: colors.textLight,
-    textAlign: "center",
-  },
-  categoryTextActive: {
-    color: colors.surface,
-  },
-  formContainer: {
-    backgroundColor: colors.surface,
-    borderRadius: layout.borderRadius.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginBottom: spacing.lg,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.text,
-    marginBottom: spacing.xs,
-    marginTop: spacing.xs,
-  },
-  titleInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: layout.borderRadius.md,
-    padding: spacing.md,
-    fontSize: 15,
-    color: colors.text,
-    marginBottom: spacing.md,
-    backgroundColor: "#F4F5F7",
-  },
-  contentInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: layout.borderRadius.md,
-    padding: spacing.md,
-    fontSize: 15,
-    color: colors.text,
-    backgroundColor: "#F4F5F7",
-    height: 120,
-  },
-  mediaContainer: {
-    flexDirection: "row",
-    gap: spacing.md,
-  },
-  mediaButton: {
-    flex: 1,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: colors.primary,
-    borderRadius: layout.borderRadius.md,
-    padding: spacing.lg,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.xs,
-  },
-  mediaText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: colors.primary,
-    textAlign: "center",
-  },
-  bottomSpacing: {
-    height: 100,
   },
 });

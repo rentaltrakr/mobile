@@ -34,8 +34,8 @@ export default function AccountScreen() {
         "Are you sure you want to log out of RentalTrakr?",
       ),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Log Out", style: "destructive", onPress: logout },
+        { text: t("logout_alert_cancel", "Cancel"), style: "cancel" },
+        { text: t("logout_alert_confirm", "Log Out"), style: "destructive", onPress: logout },
       ],
     );
   };
@@ -56,43 +56,45 @@ export default function AccountScreen() {
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>4.9</Text>
-              <Text style={styles.statLabel}>Rating</Text>
+              <Text style={styles.statLabel}>{t("account_rating", "Rating")}</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>124</Text>
-              <Text style={styles.statLabel}>Rentals</Text>
+              <Text style={styles.statLabel}>{t("account_rentals", "Rentals")}</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statValue}>2.4k</Text>
-              <Text style={styles.statLabel}>NJC Tokens</Text>
+              <Text style={styles.statLabel}>{t("account_njc_tokens", "NJC Tokens")}</Text>
             </View>
           </View>
         </View>
 
         <TouchableOpacity
           style={styles.upgradeBanner}
-          onPress={() => router.push("/(tenant-dashboard)/account-upgrade")}
+          onPress={() =>
+            router.push("/(tenant-menu)/account/screens/account-upgrade")
+          }
           activeOpacity={0.85}
         >
           <View style={styles.upgradeIconBox}>
             <Ionicons name="person-circle-outline" size={28} color="#fff" />
           </View>
           <View style={styles.upgradeTextBox}>
-            <Text style={styles.upgradeTitle}>Upgrade Account</Text>
+            <Text style={styles.upgradeTitle}>{t("account_upgrade_title", "Upgrade Account")}</Text>
             <Text style={styles.upgradeSubtitle}>
-              Unlock Pro management tools &amp; priority listing
+              {t("account_upgrade_subtitle", "Unlock Pro management tools & priority listing")}
             </Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
         <View style={styles.menuGroup}>
-          <MenuItem icon="person-outline" label="Profile" onPress={() => {}} />
+          <MenuItem icon="person-outline" label={t("account_menu_profile", "Profile")} onPress={() => {}} />
           <MenuItem
             icon="settings-outline"
-            label="Settings"
+            label={t("account_menu_settings", "Settings")}
             onPress={() => {}}
           />
         </View>
@@ -100,13 +102,13 @@ export default function AccountScreen() {
         <View style={styles.menuGroup}>
           <MenuItem
             icon="shield-checkmark-outline"
-            label="Verification"
+            label={t("account_menu_verification", "Verification")}
             onPress={() => {}}
-            badge="ACTIVE"
+            badge={t("account_menu_active", "ACTIVE")}
           />
           <MenuItem
             icon="lock-closed-outline"
-            label="Security"
+            label={t("account_menu_security", "Security")}
             onPress={() => {}}
           />
         </View>
@@ -114,11 +116,11 @@ export default function AccountScreen() {
         <View style={styles.menuGroup}>
           <MenuItem
             icon="wallet-outline"
-            label="Wallets"
+            label={t("account_menu_wallets", "Wallets")}
             onPress={() => {}}
             value="$12,450.00"
           />
-          <MenuItem icon="diamond-outline" label="NJC" onPress={() => {}} />
+          <MenuItem icon="diamond-outline" label={t("account_menu_njc", "NJC")} onPress={() => {}} />
         </View>
 
         <View style={[styles.menuGroup, styles.menuGroupOverflow]}>
@@ -136,7 +138,7 @@ export default function AccountScreen() {
         {/* Logout */}
         <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={20} color={colors.error} />
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text style={styles.logoutText}>{t("account_menu_logout", "Logout")}</Text>
         </TouchableOpacity>
 
         <View style={{ height: 100 }} />

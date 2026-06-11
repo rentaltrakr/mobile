@@ -4,7 +4,8 @@ import { colors } from "@/theme/colors";
 import { layout, spacing } from "@/theme/spacing";
 import { FeedPost } from "@/types/types";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -18,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { userProfile } from "@/constants/dummyData";
 
 const { width } = Dimensions.get("window");
 
@@ -25,6 +27,14 @@ export default function HomeScreen() {
   const { t } = useTranslation("home");
   const [activeFilter, setActiveFilter] = useState<"all" | "network" | "njc">(
     "all",
+  );
+  
+  const [postsList, setPostsList] = useState<FeedPost[]>(feedPosts);
+
+  useFocusEffect(
+    useCallback(() => {
+      setPostsList([...feedPosts]);
+    }, [])
   );
 
   // Local state for interactive buttons
@@ -53,18 +63,32 @@ export default function HomeScreen() {
     return initial;
   });
 
+  const getPostState = (postId: string, prevStates: typeof postsState) => {
+    if (prevStates[postId]) {
+      return prevStates[postId];
+    }
+    const post = postsList.find((p) => p.id === postId) || feedPosts.find((p) => p.id === postId);
+    return {
+      likesCount: post ? post.likesCount : 0,
+      hasLiked: post ? post.hasLiked : false,
+      reserveCount: post ? post.reserveCount : 0,
+      hasReserved: post ? post.hasReserved : false,
+      hasSaved: post ? post.hasSaved : false,
+    };
+  };
+
   const handleLike = (postId: string) => {
     setPostsState((prev) => {
-      const current = prev[postId];
-      const newHasLiked = !current.hasLiked;
+      const active = getPostState(postId, prev);
+      const newHasLiked = !active.hasLiked;
       return {
         ...prev,
         [postId]: {
-          ...current,
+          ...active,
           hasLiked: newHasLiked,
           likesCount: newHasLiked
-            ? current.likesCount + 1
-            : current.likesCount - 1,
+            ? active.likesCount + 1
+            : active.likesCount - 1,
         },
       };
     });
@@ -72,9 +96,9 @@ export default function HomeScreen() {
 
   const handleReserve = (postId: string) => {
     setPostsState((prev) => {
-      const current = prev[postId];
-      const newHasReserved = !current.hasReserved;
-      let newReserveCount = current.reserveCount;
+      const active = getPostState(postId, prev);
+      const newHasReserved = !active.hasReserved;
+      let newReserveCount = active.reserveCount;
       if (typeof newReserveCount === "number") {
         newReserveCount = newHasReserved
           ? newReserveCount + 1
@@ -83,15 +107,15 @@ export default function HomeScreen() {
       return {
         ...prev,
         [postId]: {
-          ...current,
+          ...active,
           hasReserved: newHasReserved,
           reserveCount: newReserveCount,
         },
       };
     });
 
-    const current = postsState[postId];
-    if (!current.hasReserved) {
+    const active = getPostState(postId, postsState);
+    if (!active.hasReserved) {
       Alert.alert(
         t("action_reserve"),
         t("reserve_success_message", "Reservation request sent successfully!"),
@@ -101,12 +125,12 @@ export default function HomeScreen() {
 
   const handleSave = (postId: string) => {
     setPostsState((prev) => {
-      const current = prev[postId];
+      const active = getPostState(postId, prev);
       return {
         ...prev,
         [postId]: {
-          ...current,
-          hasSaved: !current.hasSaved,
+          ...active,
+          hasSaved: !active.hasSaved,
         },
       };
     });
@@ -133,11 +157,15 @@ export default function HomeScreen() {
   };
 
   // Filter logic
-  const filteredPosts = feedPosts.filter((post) => {
+  const filteredPosts = postsList.filter((post) => {
     if (activeFilter === "all") return true;
     if (activeFilter === "network") {
-      // Network contains Sarah Chen and Elena Rodriguez
-      return post.id === "1" || post.id === "3";
+      // Network contains Sarah Chen, Elena Rodriguez, and user's own posts
+      return (
+        post.id === "1" ||
+        post.id === "3" ||
+        post.userName === userProfile.name
+      );
     }
     if (activeFilter === "njc") {
       // NJC regulations contains Marcus Thorne

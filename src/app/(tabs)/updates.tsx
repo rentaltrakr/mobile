@@ -11,7 +11,8 @@ import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/theme/colors";
 import { layout, spacing } from "@/theme/spacing";
-import { updateItems, UpdateItem } from "@/constants/dummyData";
+import { updateItems } from "@/constants/dummyData";
+import { UpdateItem } from "@/types/types";
 
 export default function UpdatesScreen() {
   const { t } = useTranslation("home");

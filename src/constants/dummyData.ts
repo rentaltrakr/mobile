@@ -1,16 +1,22 @@
-import { FeedPost, RequestItem, UpdateItem, UserProfile } from "@/types/types";
+import {
+  FeedPost,
+  PostOption,
+  RequestItem,
+  UpdateItem,
+  UserProfile,
+} from "@/types/types";
 
 export const feedPosts: FeedPost[] = [
   {
     id: "1",
-    userName: "Sarah Chen",
+    userName: "Nfoua Eugene",
     userRoleKey: "post_role_broker",
     userRoleColor: "#FFAB00", // Gold/orange background
     userRoleTextColor: "#FFFFFF",
     timeAgoKey: "post_hours_ago",
     timeAgoValue: 2,
-    divisionKey: "post_sarah_title",
-    textKey: "post_sarah_text",
+    divisionKey: "post_nfoua_title",
+    textKey: "post_nfoua_text",
     image: require("../assets/images/glass-building.png"),
     likesCount: 14,
     reserveCount: 3,
@@ -127,3 +133,114 @@ export const userProfile: UserProfile = {
   propertiesCount: 5,
   unitsCount: 12,
 };
+
+export const options: PostOption[] = [
+  {
+    id: "property_listing",
+    title: "Property Listing",
+    description: "List your space for rent or lease",
+    iconName: "business",
+    iconBgColor: "#EBF3FF",
+    iconColor: "#0052CC",
+    route: "/(tenant-menu)/post/screens/property-listing",
+  },
+  {
+    id: "need_property",
+    title: "Need Property",
+    description: "Post your specific rental requirements",
+    iconName: "search",
+    iconBgColor: "#FFF3E6",
+    iconColor: "#FF8F00",
+  },
+  {
+    id: "need_lawyer",
+    title: "Need Lawyer",
+    description: "Find legal assistance for contracts",
+    iconName: "hammer-outline",
+    iconBgColor: "#F4F5F7",
+    iconColor: "#5E6C84",
+  },
+  {
+    id: "need_tax",
+    title: "Need Tax Consultant",
+    description: "Financial and tax advisory services",
+    iconName: "wallet-outline",
+    iconBgColor: "#F4F5F7",
+    iconColor: "#5E6C84",
+  },
+  {
+    id: "business_opp",
+    title: "Business Opportunity",
+    description: "Partnerships and investment deals",
+    iconName: "trending-up",
+    iconBgColor: "#FEF7E0",
+    iconColor: "#C8860A",
+  },
+  {
+    id: "general_post",
+    title: "General Post",
+    description: "Share updates or start a discussion",
+    iconName: "document-text-outline",
+    iconBgColor: "#E6F6FF",
+    iconColor: "#00875A",
+  },
+];
+
+export const PRO_ROLES = [
+  {
+    id: "landlord",
+    icon: "business-outline",
+    title: "Landlord",
+    description:
+      "Manage multiple properties, track payments, and verify tenant history.",
+  },
+  {
+    id: "lawyer",
+    icon: "briefcase-outline",
+    title: "Lawyer",
+    description:
+      "Access legal document templates and provide consultation for rental disputes.",
+  },
+  {
+    id: "tax_consultant",
+    icon: "calculator-outline",
+    title: "Tax Consultant",
+    description:
+      "Assist landlords with asset depreciation and rental income tax filing.",
+  },
+  {
+    id: "partner",
+    icon: "people-outline",
+    title: "Partner",
+    description:
+      "Official service providers for cleaning, maintenance, and staging.",
+  },
+  {
+    id: "merchant",
+    icon: "storefront-outline",
+    title: "Merchant",
+    description:
+      "List supplies and equipment for commercial or residential property upgrades.",
+  },
+  {
+    id: "hotel",
+    icon: "bed-outline",
+    title: "Hotel",
+    description:
+      "Sync booking calendars and manage short-term corporate housing.",
+  },
+  {
+    id: "real_estate_agent",
+    icon: "home-outline",
+    title: "Real Estate Agent",
+    description:
+      "Broker deals, list high-end units, and earn verified referral commissions.",
+  },
+  {
+    id: "corporation",
+    icon: "stats-chart-outline",
+    title: "Corporation",
+    description:
+      "Scale operations with multi-user access and integrated portfolio analytics.",
+  },
+] as const;

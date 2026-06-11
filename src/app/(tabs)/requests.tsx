@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -8,15 +8,23 @@ import {
   Alert,
 } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/theme/colors";
 import { layout, spacing } from "@/theme/spacing";
-import { requestItems, RequestItem } from "@/constants/dummyData";
+import { requestItems } from "@/constants/dummyData";
+import { RequestItem } from "@/types/types";
 
 export default function RequestsScreen() {
   const { t } = useTranslation("home");
   const [requests, setRequests] = useState<RequestItem[]>(requestItems);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "resolved">("all");
+
+  useFocusEffect(
+    useCallback(() => {
+      setRequests([...requestItems]);
+    }, [])
+  );
 
   const getStatusColor = (status: RequestItem["status"]) => {
     switch (status) {

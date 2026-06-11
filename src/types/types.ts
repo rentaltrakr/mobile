@@ -47,3 +47,13 @@ export interface UserProfile {
   propertiesCount: number;
   unitsCount: number;
 }
+
+export interface PostOption {
+  id: string;
+  title: string;
+  description: string;
+  iconName: any;
+  iconBgColor: string;
+  iconColor: string;
+  route?: string;
+}

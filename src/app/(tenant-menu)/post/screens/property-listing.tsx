@@ -66,20 +66,21 @@ export default function PropertyListingScreen() {
       hasSaved: false,
     };
 
-    // Create a new RequestItem
+    // Create a new RequestItem matching the RequestItem interface
     const newRequest = {
       id: String(requestItems.length + 1),
-      titleKey:
+      title:
         title ||
         (category === "listing"
-          ? "New Property Listing"
+          ? t("new_property_listing", "New Property Listing")
           : category === "service"
-            ? "New Service Request"
-            : "New Compliance Alert"),
+            ? t("new_service_request", "New Service Request")
+            : t("new_compliance_alert", "New Compliance Alert")),
       status: "pending" as const,
-      statusLabelKey: "status_pending",
-      date: "Just now",
-      unit: "Skyline Apartments, Unit 201",
+      statusLabel: t("status_pending", "Pending"),
+      dateRange: t("just_now", "Just now"),
+      location: "Skyline Apartments, Unit 201",
+      image: selectedImages.length > 0 ? { uri: selectedImages[0] } : undefined,
     };
 
     // Prepend to display at the top of the feeds

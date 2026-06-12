@@ -32,11 +32,16 @@ export interface UpdateItem {
 
 export interface RequestItem {
   id: string;
-  titleKey: string;
+  title: string;
   status: "pending" | "approved" | "resolved" | "rejected";
-  statusLabelKey: string;
-  date: string;
-  unit: string;
+  statusLabel: string;
+  dateRange: string;
+  location: string;
+  image?: any;
+  offersCount?: number;
+  hasWaitingResponse?: boolean;
+  actionLabel?: string;
+  actionColor?: string;
 }
 
 export interface UserProfile {

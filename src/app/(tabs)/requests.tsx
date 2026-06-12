@@ -1,170 +1,296 @@
-import React, { useState, useCallback } from "react";
+import { requestItems } from "@/constants/dummyData";
+import { colors } from "@/theme/colors";
+import { layout, spacing } from "@/theme/spacing";
+import { RequestItem } from "@/types/types";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
+  Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from "react-native";
-import { useTranslation } from "react-i18next";
-import { useFocusEffect } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/theme/colors";
-import { layout, spacing } from "@/theme/spacing";
-import { requestItems } from "@/constants/dummyData";
-import { RequestItem } from "@/types/types";
 
 export default function RequestsScreen() {
-  const { t } = useTranslation("home");
   const [requests, setRequests] = useState<RequestItem[]>(requestItems);
-  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "resolved">("all");
+  const [filter, setFilter] = useState<
+    "all" | "my_requests" | "offers_received" | "saved"
+  >("all");
 
   useFocusEffect(
     useCallback(() => {
       setRequests([...requestItems]);
-    }, [])
+    }, []),
   );
 
   const getStatusColor = (status: RequestItem["status"]) => {
     switch (status) {
       case "pending":
-        return { bg: "#FFAB00", text: "#FFFFFF" }; // Gold
+        return { bg: "#FFAB00", label: "#FFAB00", text: "Active" };
       case "approved":
-        return { bg: "#36B37E", text: "#FFFFFF" }; // Success green
+        return { bg: "#F5F5F5", label: "#FFAB00", text: "Pending Approval" };
       case "resolved":
-        return { bg: "#0052CC", text: "#FFFFFF" }; // Blue
+        return { bg: "#F5F5F5", label: "#DE350B", text: "Offer Expired" };
       case "rejected":
-        return { bg: "#DE350B", text: "#FFFFFF" }; // Red
+        return { bg: "#F5F5F5", label: "#DE350B", text: "Cancelled" };
       default:
-        return { bg: "#DFE1E6", text: "#172B4D" };
+        return { bg: "#F5F5F5", label: "#172B4D", text: "Unknown" };
     }
   };
 
-  const handleCreateRequest = () => {
+  const getActionButtonStyle = (actionColor?: string) => {
+    switch (actionColor) {
+      case "#0052CC":
+        return { bg: "#0052CC", text: "#FFFFFF" };
+      case "#8B5A00":
+        return { bg: "#8B5A00", text: "#FFFFFF" };
+      default:
+        return { bg: "#FFFFFF", text: "#172B4D", border: true };
+    }
+  };
+
+  const handleViewOffers = (item: RequestItem) => {
     Alert.alert(
-      t("create_request_title", "New Request"),
-      t("create_request_desc", "Would you like to file a new maintenance or lease request?"),
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Yes, File Request",
-          onPress: () => {
-            const newReq: RequestItem = {
-              id: String(requests.length + 1),
-              titleKey: "request_new_plumbing",
-              status: "pending",
-              statusLabelKey: "status_pending",
-              date: "Today",
-              unit: "Skyline Apartments, Apt 104",
-            };
-            setRequests([newReq, ...requests]);
-            Alert.alert("Success", "Request submitted successfully!");
-          },
-        },
-      ]
+      "Offers",
+      `You have ${item.offersCount} offers for ${item.title}`,
     );
   };
 
-  const filteredRequests = requests.filter(req => {
-    if (filter === "all") return true;
-    return req.status === filter;
-  });
+  const handleCancelRequest = (item: RequestItem) => {
+    Alert.alert(
+      "Cancel Request",
+      `Are you sure you want to cancel the request for ${item.title}?`,
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes, Cancel",
+          onPress: () =>
+            Alert.alert("Success", "Request cancelled successfully!"),
+          style: "destructive",
+        },
+      ],
+    );
+  };
+
+  const handleRepostRequest = (item: RequestItem) => {
+    Alert.alert("Repost", `Request for ${item.title} reposted successfully!`);
+  };
+
+  const handleAction = (item: RequestItem) => {
+    if (item.actionLabel === "View Offers") {
+      handleViewOffers(item);
+    } else if (item.actionLabel === "Cancel Request") {
+      handleCancelRequest(item);
+    } else if (item.actionLabel === "Repost Request") {
+      handleRepostRequest(item);
+    }
+  };
+
+  const filteredRequests = requests;
+  // TODO: Implement actual filtering based on filter state when backend distinguishes request types
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t("requests_title")}</Text>
-        <TouchableOpacity style={styles.newButton} onPress={handleCreateRequest}>
-          <Ionicons name="add" size={20} color={colors.surface} />
-          <Text style={styles.newButtonText}>{t("new_req_btn", "New")}</Text>
-        </TouchableOpacity>
+        <View style={styles.headerContent}>
+          <View style={styles.userInfo}>
+            <Image
+              source={require("@/assets/images/me.png")}
+              style={styles.avatar}
+            />
+            <Text style={styles.headerTitle}>RentalTrakr</Text>
+          </View>
+          <TouchableOpacity style={styles.notificationIcon}>
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Status Filters */}
+        {/* Filter Tabs */}
         <View style={styles.filterRow}>
-          <TouchableOpacity 
-            style={[styles.filterButton, filter === "all" && styles.filterButtonActive]}
+          <TouchableOpacity
+            style={[
+              styles.filterTab,
+              filter === "all" && styles.filterTabActive,
+            ]}
             onPress={() => setFilter("all")}
           >
-            <Text style={[styles.filterText, filter === "all" && styles.filterTextActive]}>
-              All
+            <Text
+              style={[
+                styles.filterTabText,
+                filter === "all" && styles.filterTabTextActive,
+              ]}
+            >
+              My Requests
             </Text>
+            {filter === "all" && <View style={styles.filterTabUnderline} />}
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.filterButton, filter === "pending" && styles.filterButtonActive]}
-            onPress={() => setFilter("pending")}
+          <TouchableOpacity
+            style={[
+              styles.filterTab,
+              filter === "offers_received" && styles.filterTabActive,
+            ]}
+            onPress={() => setFilter("offers_received")}
           >
-            <Text style={[styles.filterText, filter === "pending" && styles.filterTextActive]}>
-              Pending
+            <Text
+              style={[
+                styles.filterTabText,
+                filter === "offers_received" && styles.filterTabTextActive,
+              ]}
+            >
+              Offers Received
             </Text>
+            {filter === "offers_received" && (
+              <View style={styles.filterTabUnderline} />
+            )}
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.filterButton, filter === "approved" && styles.filterButtonActive]}
-            onPress={() => setFilter("approved")}
+          <TouchableOpacity
+            style={[
+              styles.filterTab,
+              filter === "saved" && styles.filterTabActive,
+            ]}
+            onPress={() => setFilter("saved")}
           >
-            <Text style={[styles.filterText, filter === "approved" && styles.filterTextActive]}>
-              Approved
+            <Text
+              style={[
+                styles.filterTabText,
+                filter === "saved" && styles.filterTabTextActive,
+              ]}
+            >
+              Saved
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={[styles.filterButton, filter === "resolved" && styles.filterButtonActive]}
-            onPress={() => setFilter("resolved")}
-          >
-            <Text style={[styles.filterText, filter === "resolved" && styles.filterTextActive]}>
-              Resolved
-            </Text>
+            {filter === "saved" && <View style={styles.filterTabUnderline} />}
           </TouchableOpacity>
         </View>
 
         {/* Requests List */}
         <View style={styles.listContainer}>
-          {filteredRequests.map(item => {
+          {filteredRequests.map((item) => {
             const statusStyle = getStatusColor(item.status);
+            const actionStyle = getActionButtonStyle(item.actionColor);
+
             return (
               <View key={item.id} style={styles.requestCard}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.requestTitle}>
-                    {item.titleKey === "request_new_plumbing" 
-                      ? "Emergency Plumbing Leak" 
-                      : t(item.titleKey)}
-                  </Text>
-                  <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
-                    <Text style={[styles.statusText, { color: statusStyle.text }]}>
-                      {t(item.statusLabelKey)}
+                {/* Status Label and Time */}
+                <View style={styles.statusLabelRow}>
+                  <View
+                    style={[
+                      styles.statusLabel,
+                      { backgroundColor: statusStyle.label },
+                    ]}
+                  >
+                    <Text style={styles.statusLabelText}>
+                      {statusStyle.text}
                     </Text>
                   </View>
+                  <Text style={styles.requestTime}>
+                    {item.status === "pending"
+                      ? "Requested 2h ago"
+                      : "Requested 1d ago"}
+                  </Text>
                 </View>
 
+                {/* Title */}
+                <Text style={styles.requestTitle}>{item.title}</Text>
+
+                {/* Image and Details Container */}
+                <View style={styles.imageDetailsContainer}>
+                  {/* Image */}
+                  <Image source={item.image} style={styles.requestImage} />
+
+                  {/* Details Column */}
+                  <View style={styles.detailsColumn}>
+                    <View style={styles.detailItem}>
+                      <Ionicons
+                        name="calendar-outline"
+                        size={16}
+                        color="#999999"
+                      />
+                      <Text style={styles.detailText}>{item.dateRange}</Text>
+                    </View>
+                    <View style={styles.detailItem}>
+                      <Ionicons
+                        name="location-outline"
+                        size={16}
+                        color="#999999"
+                      />
+                      <Text style={styles.detailText}>{item.location}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Divider */}
                 <View style={styles.divider} />
 
-                <View style={styles.cardDetails}>
-                  <View style={styles.detailItem}>
-                    <Ionicons name="business-outline" size={16} color={colors.textLight} />
-                    <Text style={styles.detailText}>{item.unit}</Text>
+                {/* Offers/Status and Action Button Row */}
+                <View style={styles.bottomSection}>
+                  <View style={styles.statusInfoContainer}>
+                    {item.offersCount ? (
+                      <View style={styles.offersInfo}>
+                        <Ionicons
+                          name="people-outline"
+                          size={18}
+                          color="#0052CC"
+                        />
+                        <Text style={styles.offersText}>
+                          <Text style={styles.offersCount}>
+                            {item.offersCount} Offers Received
+                          </Text>
+                        </Text>
+                      </View>
+                    ) : item.hasWaitingResponse ? (
+                      <View style={styles.waitingInfo}>
+                        <Ionicons
+                          name="timer-outline"
+                          size={18}
+                          color="#999999"
+                        />
+                        <Text style={styles.waitingText}>
+                          Waiting for owner response
+                        </Text>
+                      </View>
+                    ) : null}
                   </View>
 
-                  <View style={styles.detailItem}>
-                    <Ionicons name="calendar-outline" size={16} color={colors.textLight} />
-                    <Text style={styles.detailText}>{item.date}</Text>
-                  </View>
+                  {/* Action Button */}
+                  <TouchableOpacity
+                    style={[
+                      styles.actionButton,
+                      {
+                        backgroundColor: actionStyle.bg,
+                        borderWidth: actionStyle.border ? 1 : 0,
+                        borderColor: actionStyle.border
+                          ? "#999999"
+                          : "transparent",
+                      },
+                    ]}
+                    onPress={() => handleAction(item)}
+                  >
+                    <Text
+                      style={[
+                        styles.actionButtonText,
+                        { color: actionStyle.text },
+                      ]}
+                    >
+                      {item.actionLabel}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity 
-                  style={styles.detailsButton}
-                  onPress={() => Alert.alert("Request Details", `${t(item.titleKey)} status: ${t(item.statusLabelKey)}`)}
-                >
-                  <Text style={styles.detailsButtonText}>View Status Timeline</Text>
-                  <Ionicons name="chevron-forward" size={16} color={colors.primary} />
-                </TouchableOpacity>
               </View>
             );
           })}
@@ -179,37 +305,38 @@ export default function RequestsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4F5F7",
+    backgroundColor: "#F5F5F5",
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     paddingHorizontal: spacing.lg,
     paddingTop: 54,
     paddingBottom: spacing.md,
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: "#E8E8E8",
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.text,
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  newButton: {
+  userInfo: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: layout.borderRadius.md,
-    gap: 2,
+    gap: spacing.md,
   },
-  newButtonText: {
-    color: colors.surface,
-    fontWeight: "bold",
-    fontSize: 13,
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#0052CC",
+  },
+  notificationIcon: {
+    padding: spacing.sm,
   },
   scrollContainer: {
     flex: 1,
@@ -219,29 +346,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
     paddingBottom: spacing.sm,
-    gap: spacing.sm,
+    gap: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E8E8",
   },
-  filterButton: {
+  filterTab: {
     flex: 1,
-    paddingVertical: 8,
-    borderRadius: layout.borderRadius.md,
-    backgroundColor: colors.surface,
+    paddingVertical: 12,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: colors.border,
+    position: "relative",
   },
-  filterButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  filterText: {
-    fontSize: 12,
+  filterTabActive: {},
+  filterTabText: {
+    fontSize: 13,
     fontWeight: "600",
-    color: colors.textLight,
+    color: "#999999",
   },
-  filterTextActive: {
-    color: colors.surface,
+  filterTabTextActive: {
+    color: "#172B4D",
+  },
+  filterTabUnderline: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    backgroundColor: "#0052CC",
+    borderRadius: 1.5,
   },
   listContainer: {
     padding: spacing.lg,
@@ -251,7 +383,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: layout.borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: "#E8E8E8",
     padding: spacing.lg,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -259,36 +391,50 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
   },
-  cardHeader: {
+  statusLabelRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: spacing.md,
-    gap: spacing.xs,
+  },
+  statusLabel: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  statusLabelText: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  requestTime: {
+    fontSize: 12,
+    color: "#999999",
   },
   requestTitle: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: colors.text,
+    fontWeight: "700",
+    color: "#172B4D",
+    marginBottom: spacing.md,
+  },
+  imageDetailsContainer: {
+    flexDirection: "row",
+    gap: spacing.md,
+    marginBottom: spacing.md,
+    alignItems: "flex-start",
+  },
+  requestImage: {
+    width: 100,
+    height: 100,
+    borderRadius: layout.borderRadius.md,
+    backgroundColor: "#E8E8E8",
+    flexShrink: 0,
+  },
+  detailsColumn: {
     flex: 1,
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: "bold",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginBottom: spacing.md,
-  },
-  cardDetails: {
     gap: spacing.sm,
-    marginBottom: spacing.md,
+    justifyContent: "flex-start",
+    paddingVertical: spacing.lg,
   },
   detailItem: {
     flexDirection: "row",
@@ -297,22 +443,60 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 13,
-    color: colors.textLight,
+    color: "#999999",
+    fontWeight: "400",
   },
-  detailsButton: {
+  divider: {
+    height: 1,
+    backgroundColor: "#E8E8E8",
+    marginBottom: spacing.md,
+  },
+  bottomSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: spacing.md,
+  },
+  statusInfoContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  offersInfo: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: layout.borderRadius.md,
-    gap: spacing.xs,
+    gap: spacing.sm,
   },
-  detailsButtonText: {
+  offersText: {
+    fontSize: 13,
+    color: "#172B4D",
+    fontWeight: "500",
+  },
+  offersCount: {
+    fontWeight: "700",
+    color: "#0052CC",
+  },
+  waitingInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  waitingText: {
+    fontSize: 13,
+    color: "#999999",
+    fontWeight: "400",
+  },
+  actionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: layout.borderRadius.md,
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "600",
+    minWidth: 100,
+  },
+  actionButtonText: {
     fontSize: 13,
     fontWeight: "600",
-    color: colors.primary,
   },
   bottomSpacing: {
     height: 100,

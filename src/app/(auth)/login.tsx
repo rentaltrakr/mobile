@@ -1,3 +1,5 @@
+import { useAppDispatch } from "@/store/hooks";
+import { setCredentials } from "@/store/slices/authSlice";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { colors } from "@/theme/colors";
@@ -20,6 +22,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { t } = useTranslation("auth");
 
@@ -27,10 +30,31 @@ export default function LoginScreen() {
     console.log("Logging in:", email);
 
     try {
-      // TODO: Replace with actual authentication logic
+      // Mock login: role based on email prefix
+      const isAdmin = email.toLowerCase().includes("admin");
+      const isLandlord = email.toLowerCase().includes("landlord");
+      const roles = isAdmin ? ["admin"] : isLandlord ? ["landlord"] : ["tenant"];
+
+      const user = {
+        id: "mock-user-1",
+        email,
+        firstName: isAdmin ? "Admin" : isLandlord ? "Landlord" : "Tenant",
+        lastName: "User",
+        roles,
+      };
+
       await storage.setIsAuthenticated(true);
       await storage.setUserToken("dummy-token-" + Date.now());
-      router.replace("/(tabs)");
+      await storage.setUserRoles(roles);
+
+      dispatch(setCredentials({ user, token: "dummy-token-" + Date.now() }));
+
+      const tabRoute = roles.includes("admin")
+        ? "/(tabs-admin)"
+        : roles.includes("landlord")
+          ? "/(tabs-landlord)"
+          : "/(tabs-tenant)";
+      router.replace(tabRoute as any);
     } catch (error) {
       console.error("Error during login:", error);
     }

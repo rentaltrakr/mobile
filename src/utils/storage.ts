@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   HAS_SEEN_ONBOARDING: "@has_seen_onboarding",
   IS_AUTHENTICATED: "@is_authenticated",
   USER_TOKEN: "@user_token",
+  USER_ROLES: "@user_roles",
 } as const;
 
 export const storage = {
@@ -79,12 +80,32 @@ export const storage = {
     }
   },
 
+  // User Roles (for tab routing)
+  async getUserRoles(): Promise<string[]> {
+    try {
+      const value = await AsyncStorage.getItem(STORAGE_KEYS.USER_ROLES);
+      return value ? JSON.parse(value) : [];
+    } catch (error) {
+      console.error("Error reading user roles:", error);
+      return [];
+    }
+  },
+
+  async setUserRoles(roles: string[]): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.USER_ROLES, JSON.stringify(roles));
+    } catch (error) {
+      console.error("Error saving user roles:", error);
+    }
+  },
+
   // Clear all data (for logout or app reset)
   async clearAll(): Promise<void> {
     try {
       await AsyncStorage.multiRemove([
         STORAGE_KEYS.IS_AUTHENTICATED,
         STORAGE_KEYS.USER_TOKEN,
+        STORAGE_KEYS.USER_ROLES,
       ]);
     } catch (error) {
       console.error("Error clearing storage:", error);

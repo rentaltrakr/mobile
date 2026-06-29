@@ -15,7 +15,7 @@ import "@/i18n"; // Initialize i18n
 import { store } from "@/store";
 
 export const unstable_settings = {
-  anchor: "(tabs)",
+  anchor: "(tabs-tenant)",
 };
 
 export default function RootLayout() {
@@ -31,7 +31,9 @@ export default function RootLayout() {
             <Stack>
               <Stack.Screen name="index" options={{ title: "Home" }} />
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs-tenant)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs-admin)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs-landlord)" options={{ headerShown: false }} />
               <Stack.Screen
                 name="(tenant-menu)"
                 options={{ headerShown: false }}

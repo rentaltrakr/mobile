@@ -32,7 +32,7 @@ export default function PostTabScreen() {
   };
 
   const handleCancel = () => {
-    router.push("/(tabs)");
+    router.push("/(tabs-tenant)" as any);
   };
 
   return (
@@ -129,7 +129,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F5F7",
   },
 
-  /* ── Gray Branding Header ── */
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -167,7 +166,6 @@ const styles = StyleSheet.create({
     padding: 4,
   },
 
-  /* ── Modal Sheet ── */
   sheetContainer: {
     flex: 1,
     backgroundColor: "#FFFFFF",

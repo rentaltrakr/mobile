@@ -91,7 +91,6 @@ export default function RequestsScreen() {
   };
 
   const filteredRequests = requests;
-  // TODO: Implement actual filtering based on filter state when backend distinguishes request types
 
   return (
     <View style={styles.container}>

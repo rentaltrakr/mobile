@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#DE350B", // Red alert badge
+    backgroundColor: "#DE350B",
   },
   container: {
     flex: 1,
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 12,
-    backgroundColor: "#FFAB00", // Gold-yellow rounded square border container
+    backgroundColor: "#FFAB00",
     padding: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
@@ -766,7 +766,7 @@ const styles = StyleSheet.create({
   fabInner: {
     flex: 1,
     borderRadius: 10,
-    backgroundColor: "#172B4D", // Dark navy/black circle container inside
+    backgroundColor: "#172B4D",
     alignItems: "center",
     justifyContent: "center",
   },

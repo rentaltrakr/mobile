@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../index';
 
-interface UserProfile {
+export interface UserProfile {
   id: string;
   email: string;
   firstName: string;
@@ -42,4 +43,8 @@ const authSlice = createSlice({
 });
 
 export const { setCredentials, logout } = authSlice.actions;
+
+export const selectIsAdmin = (state: RootState) =>
+  state.auth.user?.roles?.includes('admin') ?? false;
+
 export default authSlice.reducer;
